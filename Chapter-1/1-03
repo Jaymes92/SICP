@@ -1,0 +1,12 @@
+#lang sicp
+(define (square_two_largest a b c)
+  (cond ((and (<= a b) (<= a c)) (+ (* b b) (* c c)))
+        ((and (<= b a) (<= b c)) (+ (* a a) (* c c)))
+        ((and (<= c a) (<= c b)) (+ (* a a) (* b b)))))
+
+(square_two_largest 10 20 30)
+(square_two_largest 10 30 20)
+(square_two_largest 20 10 30)
+(square_two_largest 20 30 10)
+(square_two_largest 30 20 10)
+(square_two_largest 30 10 20)
