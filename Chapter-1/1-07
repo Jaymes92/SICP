@@ -1,0 +1,26 @@
+#lang sicp
+(define (average x y)
+  (/ (+ x y) 2))
+
+(define (square x)
+  (* x x))
+
+(define (abs x)
+  (if (< x 0) (- x) x))
+
+(define (sqrt-iter last-guess guess x)
+  (if (good-enough? last-guess guess)
+       guess
+       (sqrt-iter guess (improve guess x) x)))
+
+(define (improve guess x)
+  (average guess (/ x guess)))
+
+;Define stop point to be when change between guesses is some small defined fraction of the guess.
+(define (good-enough? last-guess guess)
+  (< (/ (abs(- guess last-guess)) guess) 0.0000001))
+
+(define (sqrt x)
+  (sqrt-iter 0 1.0 x))
+
+(sqrt 2)
