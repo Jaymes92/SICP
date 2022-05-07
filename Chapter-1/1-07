@@ -17,10 +17,12 @@
   (average guess (/ x guess)))
 
 ;Define stop point to be when change between guesses is some small defined fraction of the guess.
+;Fixes inaccuracies for low numbers, and infinite loop for large numbers.
 (define (good-enough? last-guess guess)
   (< (/ (abs(- guess last-guess)) guess) 0.0000001))
 
 (define (sqrt x)
   (sqrt-iter 0 1.0 x))
 
-(sqrt 2)
+(sqrt 123456789123123456789)
+(sqrt 0.0000000000000000001)
