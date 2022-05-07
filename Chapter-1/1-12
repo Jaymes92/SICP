@@ -1,0 +1,9 @@
+#lang sicp
+;Defined where x is the depth (tip of triangle is x=1) and y is coordinate along base. Return 0 when
+;coordinate out of bounds and recognize that the first two layers are all 1's. Each element sum of the two above it
+(define (pascal x y)
+  (cond ((or (> y x) (< x 1) (< y 1)) 0)
+        ((or (= x 2) (= x 1)) 1)
+        (else (+ (pascal (- x 1) y) (pascal (- x 1) (- y 1))))))
+
+(pascal 6 4)
