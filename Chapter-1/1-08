@@ -1,0 +1,23 @@
+#lang sicp
+(define (square x)
+  (* x x))
+
+(define (abs x)
+  (if (< x 0) (- x) x))
+
+(define (cuberoot-iter last-guess guess x)
+  (if (good-enough? last-guess guess)
+       guess
+       (cuberoot-iter guess (improve guess x) x)))
+
+(define (improve guess x)
+  (/ (+ (/ x (square guess)) (* 2 guess)) 3))
+
+(define (good-enough? last-guess guess)
+  (< (/ (abs(- guess last-guess)) guess) 0.0000001))
+
+(define (cuberoot x)
+  (cuberoot-iter 0 1.0 x))
+
+(cuberoot 123456789123123456789)
+(cuberoot 0.0000000000000000001)
