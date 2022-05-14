@@ -1,0 +1,47 @@
+#lang sicp
+;(a, b) --Tpq--> (a', b')
+;a' = bq + aq + ap
+;b' = bp + aq
+;(a', b') --Tpq--> (a'', b'')
+;a'' = b'q + a'q + a'p
+;b'' = b'p + a'q
+;Now we will expand b' and a' in our b'' definition, collect p and q terms together to define a new p' and q'.
+;b'' = (bp + aq)p + (bq + aq + ap)q
+;b'' = b(p^2 + q^2) + a(2pq + q^2)
+;This is in the form bp' + aq' where
+;p' = p^2 + q^2
+;q' = 2pq + q^2
+;You can sub this in for a'' = bq' + aq' + ap' and compare to the expanded version of a'' above to see they are equal.
+(define (even? x)
+  (= 0 (remainder x 2)))
+
+(define (square x)
+  (* x x))
+
+(define (fib n)
+  (fib-iter 1 0 0 1 n))
+
+(define (fib-iter a b p q count)
+  (cond ((= count 0) b)
+        ((even? count)
+         (fib-iter a
+                   b
+                   (+ (square p) (square q))
+                   (+ (square q) (* 2 p q))
+                   (/ count 2)))
+        (else (fib-iter (+ (* b q) (* a q) (* a p))
+                        (+ (* b p) (* a q))
+                        p
+                        q
+                        (- count 1)))))
+
+;Testing
+(fib 1)
+(fib 2)
+(fib 3)
+(fib 4)
+(fib 5)
+(fib 6)
+(fib 7)
+(fib 8)
+(fib 9)
