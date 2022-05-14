@@ -1,0 +1,25 @@
+#lang sicp
+;If n is even solve a1*b^n = a2*b^(n/2).
+;Get a2 = a1*b^(n/2).
+;So next step for even takes form a1*(b^(n/2))^2 = a1*(b^2)^(n/2)
+;Which is the form (a')*(b')^(n') for the next call.
+
+;If n is odd solve a1*b^n = a2*b^(n-1).
+;Get a2 = a1*b
+;So next step for odd takes form (a1*b)*b^(n-1)
+;Which is the form (a')*b^(n') for the next call.
+(define (expt b n)
+  (fast-expt b n 1))
+
+(define (fast-expt b n a)
+  (cond ((= n 0) a)
+        ((even? n) (fast-expt (square b) (/ n 2) a))
+        (else (fast-expt b (- n 1) (* a b)))))
+
+(define (even? n)
+  (= (remainder n 2) 0))
+
+(define (square x)
+  (* x x))
+
+(expt 4 100)
