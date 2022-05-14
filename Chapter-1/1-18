@@ -1,0 +1,25 @@
+#lang sicp
+;Add state variable k such that k + ab is constant, and start with k = 0. Once b = 0, k is the answer.
+;If even: k1 + a1*b1 = k2 + a2*b2. We use b2 = b1/2, k2 = k1, a2 = 2*a1.
+;If odd re-write as k1 + a1*b1 = k1 + a1 + a1*(b1-1)
+;This is of form k' = a'b' where k' = k1 + a1, a' = a1, and b' = b1 - 1.
+(define (double x)
+  (+ x x))
+
+(define (halve x)
+  (/ x 2))
+
+(define (even? x)
+  (= (remainder x 2) 0))
+
+(define (fast-* a b)
+  (iter a b 0))
+
+(define (iter a b k)
+  (cond ((= b 0) k)
+        ((even? b) (iter (double a) (halve b) k))
+        (else (iter a (- b 1) (+ k a)))))
+
+;Testing
+(fast-* 8 72)
+(fast-* 7882 583728097)
