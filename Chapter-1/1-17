@@ -1,0 +1,20 @@
+#lang sicp
+;If n is even then write ab = (2a)*(b/2)
+;If n is odd then write ab = a + a*(b-1)
+;This should be O(log(b)) steps.
+(define (double x)
+  (+ x x))
+
+(define (halve x)
+  (/ x 2))
+
+(define (even? x)
+  (= (remainder x 2) 0))
+
+(define (fast-* a b)
+  (cond ((= b 0) 0)
+        ((even? b) (fast-* (double a) (halve b)))
+        (else (+ a (fast-* a (- b 1))))))
+
+(fast-* 10 5)
+(fast-* 8 72)
