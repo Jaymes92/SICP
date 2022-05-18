@@ -1,0 +1,62 @@
+#lang sicp
+;Prime checking (from book).
+(define (prime? n)
+  (= n (smallest-divisor n)))
+
+(define (smallest-divisor n)
+  (find-divisor n 2))
+
+(define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor) n) n)
+        ((divides? test-divisor n) test-divisor)
+        (else (find-divisor n (next test-divisor)))))
+
+(define (divides? a b)
+  (= (remainder b a) 0))
+
+(define (square x)
+  (* x x))
+
+(define (next x)
+  (if (= x 2) 3 (+ x 2)))
+  
+
+;Timing (from book).
+(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
+
+(define (start-prime-test n start-time)
+  (if (prime? n)
+      (report-prime (- (runtime) start-time))))
+
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display elapsed-time))
+
+;Check consecutive odd integers in range.
+(define (search-for-primes start-range end-range)
+  (cond ((even? start-range) (search-for-primes (+ start-range 1) end-range))
+        (else (timed-prime-test start-range)
+              (if (< start-range (- end-range 1)) (search-for-primes (+ start-range 2) end-range)))))
+
+(define (even? x)
+  (= (remainder x 2) 0))
+
+;Select ranges that show the first three primes.
+;In range 1,000 it took [1,2,2] us (avg 1.667 us)
+;In range 10,000 it took [4,4,4] us (avg 4.0 us)
+;In range 100,000 it took [10,10,12] us (avg 10.667 us)
+;In range 1,000,000 it took [31,29,35] us (avg 31.667 us)
+;Look at ratio of averate compute times between procedure in problem 1-22 to this procedure:
+;(1.667)/2 = 0.833
+;(4)/(5.333) = 0.75
+;(10.667)/(12.333) = 0.865
+;(31.667)/(37.667) = 0.84
+;We are far way from a factor of 2 improvement in speed. This implies there must be more computation time in
+;other parts of the procedure (i.e. Cutting down purely the number of find-divisor calls isn't the only factor).
+(search-for-primes 1001 1019)
+(search-for-primes 10000 10037)
+(search-for-primes 100000 100043)
+(search-for-primes 1000000 1000037)
