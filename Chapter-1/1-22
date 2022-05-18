@@ -41,15 +41,16 @@
   (= (remainder x 2) 0))
 
 ;Select ranges that show the first three primes.
-;In range 1,000 it took 1-2 us (avg 1.5 us)
-;In range 10,000 it took 3-4 us (avg 3.5 us)
-;In range 100,000 it took 11-13 us (avg 12 us)
-;In range 1,000,000 it took 34-36 us (avg 35 us)
-;Take middle as their range as the average to use for comparison.
-;(3.5)/(1.5) = 2.33
-;(12)/(3.5) = 3.43
-;(35)/(12) = 2.92
-;Note that sqrt(10) ~ 3.16 so our ratios aren't exact, but we are in the right ball park of increasing on O(sqrt(n)).
+;In range 1,000 it took [2,2,2] us. (avg 2.0 us)
+;In range 10,000 it took [6,5,5] us (avg 5.333 us)
+;In range 100,000 it took [12,13,12] us (avg 12.333 us)
+;In range 1,000,000 it took [36,39,38] us (avg 37.667 us)
+;Look at ratio of average compute times between ranges.
+;(5.333)/(2) = 2.667
+;(12.333)/(5.333) = 2.313
+;(37.667)/(12.333) = 3.054
+;Note that sqrt(10) ~ 3.16 so our ratios are all under the O(sqrt(n)) dependency.
+;Note that cuberoot(10) ~ 2.15 so this computation seems to have a dependency that falls between these two roots.
 (search-for-primes 1001 1019)
 (search-for-primes 10000 10037)
 (search-for-primes 100000 100043)
