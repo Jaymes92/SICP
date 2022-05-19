@@ -1,0 +1,57 @@
+#lang sicp
+;Prime checking (from book - Fermat's method).
+(define (fast-prime? n times)
+  (cond((= times 0) true)
+       ((fermat-test n) (fast-prime? n (- times 1)))
+       (else false)))
+
+(define (fermat-test n)
+  (define (try-it a)
+    (= (expmod a n n) a))
+  (try-it (+ 1 (random (- n 1)))))
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m)) m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m)) m))))
+
+(define (square x)
+  (* x x))
+
+(define (even? x)
+  (= (remainder x 2) 0))
+
+;Timing (from book).
+(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
+
+(define (start-prime-test n start-time)
+  (if (fast-prime? n 4)
+      (report-prime (- (runtime) start-time))))
+
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display elapsed-time))
+
+;Check consecutive odd integers in range.
+(define (search-for-primes start-range end-range)
+  (cond ((even? start-range) (search-for-primes (+ start-range 1) end-range))
+        (else (timed-prime-test start-range)
+              (if (< start-range (- end-range 1)) (search-for-primes (+ start-range 2) end-range)))))
+
+;Book mentions checking 2 random numbers implies a >75% certainty that the number is prime. I arbitrarily picked 4.
+;Select ranges that show the first three primes.
+;In range 1,000 it took [5,6,6] us (avg 5.667 us)
+;In range 10,000 it took [7,8,6] us (avg 7.0 us)
+;In range 100,000 it took [7,7,7] us (avg 7.0 us)
+;In range 1,000,000 it took [8,8,9] us (avg 8.333 us)
+;For O(logn) we expect at 1,000,000 to take twice as long as 1,000, but it's less than that.
+
+(search-for-primes 1001 1019)
+(search-for-primes 10000 10037)
+(search-for-primes 100000 100043)
+(search-for-primes 1000000 1000037)
