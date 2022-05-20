@@ -1,0 +1,25 @@
+#lang sicp
+(define (sum term a next b)
+  (define (iter a result)
+    (if (> a b)
+        result
+        (iter (next a) (+ result (term a)))))
+  (iter a 0))
+
+;Test is consistent with 1.29 solution.
+(define (cube x) (* x x x))
+
+(define (simpson-integral f a b n)
+  (define h (/ (- b a) n))
+  (define (simpson-next x)
+    (+ x 2))
+  (define (simpson-f x)
+    (f (+ a (* x h))))
+  (* (/ h 3)
+     (+ (f a)
+        (f b)
+        (* 4 (sum simpson-f 1 simpson-next (- n 1)))
+        (* 2 (sum simpson-f 2 simpson-next (- n 2))))))
+
+(simpson-integral cube 0 1.0 100)
+(simpson-integral cube 0 1.0 1000)
