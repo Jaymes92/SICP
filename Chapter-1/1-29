@@ -1,0 +1,22 @@
+#lang sicp
+(define (cube x) (* x x x))
+
+(define (sum term a next b)
+  (if (> a b)
+      0
+      (+ (term a) (sum term (next a) next b))))
+
+;Break the sum into f(a) + f(b) + 4*(sum(yk) for k=1..n-1 for every other k) + 
+;2*(sum(yk) for k=2..n-2 for every other k)
+(define (simpson-integral f a b n)
+  (define (simpson-next x)
+    (+ x 2))
+  (define (simpson-f x)
+    (f (+ a (* x (/ (- b a) n)))))
+  (* (/ (/ (- b a) n) 3)
+     (+ (f a)
+        (f b)
+        (* 4 (sum simpson-f 1 simpson-next (- n 1)))
+        (* 2 (sum simpson-f 2 simpson-next (- n 2))))))
+
+(simpson-integral cube 0 1.0 1000)
