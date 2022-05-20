@@ -1,0 +1,36 @@
+#lang sicp
+;Recursive procedure. 
+(define (accumulate-recur combiner null-value term a next b)
+  (if (> a b)
+      null-value
+      (combiner (term a) (accumulate-recur combiner null-value term (next a) next b))))
+
+;Use to define recursive product and sum procedures.
+(define (identity x) x)
+
+(define (product-recur a b)
+  (accumulate-recur * 1 identity a inc b))
+
+(define (sum-recur a b)
+  (accumulate-recur + 0 identity a inc b))
+
+(product-recur 4 10)
+(sum-recur 2 5)
+
+;Iterative procedure.
+(define (accumulate-iter combiner null-value term a next b)
+  (define (iter a result)
+    (if (> a b)
+        result
+        (iter (next a) (combiner (term a) result))))
+  (iter a null-value))
+
+;Use to define iterative product and sum procedures.
+(define (product-iter a b)
+  (accumulate-iter * 1 identity a inc b))
+
+(define (sum-iter a b)
+  (accumulate-iter + 0 identity a inc b))
+
+(product-iter 4 10)
+(sum-iter 2 5)
