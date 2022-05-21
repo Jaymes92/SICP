@@ -1,0 +1,27 @@
+#lang sicp
+;Recursive procedure.
+(define (cont-frac-recur n d k)
+  (define (iter count)
+    (if (> count k)
+        0
+        (/ (n count) (+ (d count) (iter (+ count 1))))))
+  (iter 1))
+
+;Confirm it works to comput golden ratio. Once k = 12, accuracy is good when rounded to 4 decimal places.
+(cont-frac-recur (lambda (i) 1.0)
+                 (lambda (i) 1.0)
+                 12)
+
+;Keep track of cumulative denominator, counting down. When count = 0, return N1/(total denominator).
+;Iterative version.
+(define (cont-frac-iter n d k)
+  (define (iter count denom)
+    (if (= count 0)
+        (/ (n 1) denom)
+        (iter (- count 1) (+ (d count) (/ (n (+ count 1)) denom)))))
+  (iter (- k 1) (d k)))
+
+;Confirm result is same as above recursive method.
+(cont-frac-iter (lambda (i) 1.0)
+                (lambda (i) 1.0)
+                12)
