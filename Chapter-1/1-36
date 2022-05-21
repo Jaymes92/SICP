@@ -1,0 +1,22 @@
+#lang sicp
+;Add display to output steps to the fixed-point function from book.
+(define tolerance 0.00001)
+
+(define (fixed-point f first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ((next (f guess)))
+      (display guess)
+      (display " |--> ")
+      (display (f guess))
+      (newline)
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+
+;With damping the transformation becomes x |--> (1/2)(x+log1000/logx).
+;Goes from 33 steps to 10 steps when average damping is introduced!
+(fixed-point (lambda (x) (/ (log 1000) (log x))) 10.0)
+(fixed-point (lambda (x) (/ (+ (/ (log 1000) (log x)) x) 2)) 10.0)
