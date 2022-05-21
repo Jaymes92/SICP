@@ -1,0 +1,16 @@
+#lang sicp
+(define (cont-frac-recur n d k)
+  (define (iter count)
+    (if (> count k)
+        0
+        (/ (n count) (+ (d count) (iter (+ count 1))))))
+  (iter 1))
+
+;Note we can express the series as 2*(floor(i/3)+1) whenever the remainder of i/3=2. Otherwise it is just 1.
+(define (d-euler i)
+  (if (= (remainder i 3) 2)
+      (* (+ (floor (/ i 3)) 1) 2)
+      1))
+
+;Write e = (Euler's expansion) + 2 and confirm it matches the real value.
+(+ (cont-frac-recur (lambda (i) 1.0) d-euler 100) 2)
