@@ -1,0 +1,14 @@
+#lang sicp
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+(define (square x) (* x x))
+
+(define (repeated f n)
+  (define (iter count)
+    (if (>= count n)
+        f
+        (compose f (iter (+ count 1)))))
+  (iter 1))
+
+((repeated square 2) 5)
