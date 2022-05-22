@@ -1,0 +1,17 @@
+#lang sicp
+(define (cont-frac-recur n d k)
+  (define (iter count)
+    (if (> count k)
+        0
+        (/ (n count) (+ (d count) (iter (+ count 1))))))
+  (iter 1.0))
+
+(define (tan-cf x k)
+  (cont-frac-recur (lambda (i)
+                     (if (= i 1)
+                         x
+                         (- (* x x))))
+                   (lambda (i) (+ (* 2 (- i 1)) 1))
+                   k))
+
+(tan-cf 3.14159 10000)
