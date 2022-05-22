@@ -1,0 +1,6 @@
+#lang sicp
+(define (double f)
+  (lambda (x) (f (f x))))
+
+;This returns 21 (inc is applied 16 times).
+(((double (double double)) inc) 5)
