@@ -1,0 +1,38 @@
+#lang sicp
+;Input two procedures - one to tell if a guess is good enough and one to improve a guess.
+;Return a procedure that takes a guess and keeps improving the guess until it is good enough.
+(define (iterative-improve good-enough? improve)
+  (lambda (guess)
+    (if (good-enough? guess)
+        guess
+        ((iterative-improve good-enough? improve) (improve guess)))))
+
+;Redefine sqrt procedure with iterative-improve, and test it is working.
+(define (sqrt x)
+  (define (sqrt-good-enough? guess)
+    (< (abs (- (square guess) x)) 0.001))
+  (define (sqrt-improve guess)
+    (average guess (/ x guess)))
+  ((iterative-improve sqrt-good-enough? sqrt-improve) 1.0))
+
+(define (square x)
+  (* x x))
+(define (average x y)
+  (/ (+ x y) 2))
+
+(sqrt 49)
+
+;Redefine fixed-point procedure with iterative-improve.
+(define (fixed-point f first-guess)
+  (define (close-enough? guess)
+    (< (abs (- guess (f guess))) 0.00001))
+  (define (improve guess)
+    (f guess))
+  ((iterative-improve close-enough? improve) first-guess))
+
+;Test fixed point is working by defining sqrt with it.
+(define (sqrt-fixed-point x)
+  (fixed-point (lambda (y) (average y (/ x y)))
+               1.0))
+
+(sqrt-fixed-point 49)
