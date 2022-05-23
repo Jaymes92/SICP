@@ -1,0 +1,15 @@
+#lang sicp
+;Greatest common denominator procedure from Ch. 1
+(define (gcd a b)
+  (if (= b 0)
+      a
+      (gcd b (remainder a b))))
+
+;If denominator negative flip sign of both numerator and denominator to normalize signs.
+(define (make-rat n d)
+  (let ((g (abs (gcd n d))))
+    (if (< d 0)
+        (cons (/ (- n) g) (/ (- d) g))
+        (cons (/ n g) (/ d g)))))
+
+(make-rat 5 (- 10))
