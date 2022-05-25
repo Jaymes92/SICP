@@ -1,0 +1,94 @@
+#lang sicp
+(define (square x) (* x x))
+
+(define (average x y) (/ (+ x y) 2))
+
+(define (sqrt x)
+  (define (good-enough? guess)
+    (< (abs (- (square guess) x)) 0.000001))
+  (define (improve guess)
+    (average guess (/ x guess)))
+  (define (sqrt-iter guess)
+    (if (good-enough? guess)
+        guess
+        (sqrt-iter (improve guess))))
+  (sqrt-iter 1.0))
+
+;From solution 2.02.
+(define (make-point x y)
+  (cons x y))
+
+(define (x-point p)
+  (car p))
+
+(define (y-point p)
+  (cdr p))
+
+;Define a rectangle with a point (origin), tilt angle, width and height.
+;Angle and origin not needed for this problem.. just generalizing. 
+(define (make-rect p angle width height)
+  (cons (cons p angle) (cons width height)))
+
+;Width and height selectors easy with this representation.
+(define (rect-height r)
+  (cdr (cdr r)))
+
+(define (rect-width r)
+  (car (cdr r)))
+
+;Generic perimeter and area procedures to use with both representations.
+(define (perimeter r)
+  (* 2 (+ (rect-height r) (rect-width r))))
+
+(define (area r)
+  (* (rect-height r) (rect-width r)))
+
+;Test - returns 70 and 150 as expected.
+(define test (make-rect (make-point 0 0) 0 30 5))
+(perimeter test)
+(area test)
+
+;Define a rectangle in terms of three points (that form a right angle) - p2 must be the corner point.
+;Check to make sure they are orthogonal (have to be for it to form a rectangle).
+(define (make-rect2 p1 p2 p3)
+  (if (is-orthogonal? p1 p2 p3)
+      (cons p1 (cons p2 p3))
+      (display "Points not orthogonal!")))
+
+;Define selectors to work so they just return a number - just like prior implementation.
+(define (rect-height2 r)
+  (let ((p1 (car r))
+        (p2 (car (cdr r))))
+    (sqrt (length-squared p1 p2))))
+
+(define (rect-width2 r)
+  (let ((p2 (car (cdr r)))
+        (p3 (cdr (cdr r))))
+    (sqrt (length-squared p2 p3))))
+
+;Perimeter and area follow identical syntax - calling second implementation's selectors instead of the first.
+(define (perimeter2 r)
+  (* 2 (+ (rect-height2 r) (rect-width2 r))))
+
+(define (area2 r)
+  (* (rect-height2 r) (rect-width2 r)))
+
+;Use pythagoras to check if three points orthogonal - p2 must be the corner point.
+(define (is-orthogonal? p1 p2 p3)
+  (= (length-squared p1 p3) (+ (length-squared p1 p2) (length-squared p2 p3))))
+
+;Calculate (length)^2 of line between two given points.
+(define (length-squared p1 p2)
+  (let ((x1 (x-point p1))
+        (x2 (x-point p2))
+        (y1 (y-point p1))
+        (y2 (y-point p2)))
+    (+ (square (- x2 x1)) (square (- y2 y1)))))
+
+;Same rectangle as above, different representation (haven't bothered with any angles).
+;Returns (floating point) same answers!
+(define test2 (make-rect2 (make-point 0 5)
+                          (make-point 0 0)
+                          (make-point 30 0)))
+(perimeter2 test2)
+(area2 test2)
