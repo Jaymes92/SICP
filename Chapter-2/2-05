@@ -1,0 +1,35 @@
+#lang sicp
+(define (expt b n)
+  (if (= n 0)
+      1
+      (* b (expt b (- n 1)))))
+
+;Represent pairs of non-negative integers (a,b) as integer (2^a)(3^b)
+;Try (2,3) --> (2^2)(3^3) = 108.
+;Divide by 2 until no remainder 108/2=54/2=27 (2 times, or a)
+;Divide by 3 until no remainder 27/3=9/3=3/3=1 (3 times, or b)
+;Try in other order:
+;Divide by 3 until no remainder 108/3=36/3=12/3=4 (3 times, or b)
+;Divide by 2 until no remainder 4/2=2/2=1 (2 times, or a)
+;So a is given by the number of times you can divide the number 2 until no remainder, divide by 3 to get b.
+(define (cons a b)
+  (* (expt 2 a) (expt 3 b)))
+
+(define (car z)
+  (define (iter n count)
+    (if (= (remainder n 2) 0)
+        (iter (/ n 2) (+ count 1))
+        count))
+  (iter z 0))
+
+(define (cdr z)
+  (define (iter n count)
+    (if (= (remainder n 3) 0)
+        (iter (/ n 3) (+ count 1))
+        count))
+  (iter z 0))
+
+;Works as expected! 
+(define test (cons 5 7))
+(car test)
+(cdr test)
