@@ -1,0 +1,24 @@
+#lang sicp
+;Use list-ref and length (from book).
+(define (list-ref items n)
+  (if (= n 0)
+      (car items)
+      (list-ref (cdr items) (- n 1))))
+
+(define (length items)
+  (if (null? items)
+      0
+      (+ 1 (length (cdr items)))))
+
+;Start at (length - 1) to get last value, for first value in new list.
+;Recursively call, counting down to 0 to end new list.
+(define (reverse items)
+  (define index (- (length items) 1))
+  (define (reverse-iter i)
+    (if (= i 0)
+        (cons (car items) nil)
+        (cons (list-ref items i) (reverse-iter (- i 1)))))
+  (reverse-iter index))
+
+;Test procedure.
+(reverse (list 1 2 3 4))

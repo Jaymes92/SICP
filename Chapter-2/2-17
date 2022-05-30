@@ -1,0 +1,12 @@
+#lang sicp
+;Check next (cdr) - if empty set, return current (car).
+(define (last-pair items)
+  (if (null? (cdr items))
+      items
+      (last-pair (cdr items))))
+
+;Test - returns last pair as expected.
+(define test-list (list 1 2 3 4 5))
+(last-pair test-list)
+(car (last-pair test-list))
+(cdr (last-pair test-list))
