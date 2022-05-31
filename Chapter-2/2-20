@@ -1,0 +1,18 @@
+#lang sicp
+;Return list of all integers in i that have same parity as integer n.
+(define (same-parity n . i)
+  (define (same-parity? num)
+    (= (remainder num 2) (remainder n 2)))
+
+  ;Helper function. Iterate down the list checking each car value for parity to add to return list.
+  (define (iter list)
+    (if (null? list)
+        nil
+        (if (same-parity? (car list))
+            (cons (car list) (iter (cdr list)))
+            (iter (cdr list)))))
+  
+  (cons n (iter i)))
+
+(same-parity 1 2 3 4 5 6 7)
+(same-parity 2 3 4 5 6 7)
