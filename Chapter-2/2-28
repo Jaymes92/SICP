@@ -1,0 +1,17 @@
+#lang sicp
+;Fringe of the overall tree is the list of (fringe (car tree)) appended to the list of (fringe (cdr tree))
+;all the way down. Append needs lists, so return each leaf as a list of one element.
+(define (fringe tree)
+  (cond ((null? tree)
+         nil)
+        ((not (pair? tree))
+         (list tree))
+        (else
+         (append (fringe (car tree)) (fringe (cdr tree))))))
+
+;Run a few tests, all looks good.
+(define x (list (list 1 2) (list 3 4) (list 5 6)))
+(fringe x)
+(define y (list (list (list 1 2 3) (list 4 5)) (list (list 6 7) (list 8 9 10))))
+(fringe y)
+(fringe (list y y))
