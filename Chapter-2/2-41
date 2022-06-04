@@ -1,0 +1,47 @@
+#lang sicp
+;'Signal Flow' procedures.
+(define (filter predicate sequence)
+  (cond ((null? sequence) nil)
+        ((predicate (car sequence))
+         (cons (car sequence)
+               (filter predicate (cdr sequence))))
+        (else (filter predicate (cdr sequence)))))
+
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence)
+          (accumulate op initial (cdr sequence)))))
+
+(define (flatmap proc seq)
+  (accumulate append nil (map proc seq)))
+
+(define (enumerate-interval n m)
+  (if (> n m)
+        nil
+        (cons n (enumerate-interval (+ n 1) m))))
+
+;Generate sequence of pairs (i,j) with 1<=j<i<=n
+(define (unique-pairs n)
+  (flatmap (lambda (i)
+             (map (lambda (j) (list i j))
+                  (enumerate-interval 1 (- i 1))))
+           (enumerate-interval 2 n)))
+
+;Make all triplets (i,j,k) such that 1<=k<j<i
+;Use prior unique-pairs procedure to generate all pairs with n=i-1 to combine with i.
+(define (unique-triplets i)
+  (map
+   (lambda (pair)
+     (append (list i) pair))
+   (unique-pairs (- i 1))))
+
+;Generate all unique ordered triples such that and 1<=k<j<i<=n and i+j+k=s.
+(define (unique-triplets-sum n s)
+  (filter (lambda (t)
+            (= (+ (car t) (cadr t) (caddr t)) s))
+          (flatmap unique-triplets (enumerate-interval 3 n))))
+
+;Testing, seems good!
+(unique-triplets-sum 100 222)
+(unique-triplets-sum 10 15)
