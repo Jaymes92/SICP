@@ -1,0 +1,21 @@
+#lang sicp
+;If both elements are the same, just add it with the union of both sets with first element removed.
+;If one is greater than the other, add the smaller element with the union of the set with the larger value,
+;with the set with the smaller value with the first element removed.
+;At worst this will take as many steps as the sum of their sizes - so O(n).
+(define (union-set set1 set2)
+  (cond ((null? set1) set2)
+        ((null? set2) set1)
+        ((= (car set1) (car set2))
+         (cons (car set1)
+               (union-set (cdr set1) (cdr set2))))
+        ((> (car set1) (car set2))
+         (cons (car set2)
+               (union-set set1 (cdr set2))))
+        ((< (car set1) (car set2))
+         (cons (car set1)
+               (union-set (cdr set1) set2)))))
+
+(define a (list 1 2 4 6 7))
+(define b (list 3 4 5 9))
+(union-set a b)

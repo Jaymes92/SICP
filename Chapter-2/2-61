@@ -1,0 +1,11 @@
+#lang sicp
+;Traverse list by recursively calling the function with the smaller (cdr set).
+;If x is current value, we ignore it. If the current value becomes larger than x, we insert x there.
+(define (adjoin x set)
+  (cond ((null? set) (cons x '()))
+        ((= x (car set)) set)
+        ((< x (car set)) (cons x set))
+        (else (cons (car set) (adjoin x (cdr set))))))
+
+(adjoin 5 (list 1 2 6))
+
