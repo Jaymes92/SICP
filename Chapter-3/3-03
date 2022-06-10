@@ -1,0 +1,23 @@
+#lang sicp
+;Add second input to dispatch to check for password.
+(define (make-account balance password)
+  (define (withdraw amount)
+    (if (>= balance amount)
+        (begin (set! balance (- balance amount))
+               balance)
+        "Insufficient funds"))
+  (define (deposit amount)
+    (set! balance (+ balance amount))
+    balance)
+  (define (dispatch pw m)
+    (cond ((not (eq? pw password)) (display "Incorrect password") (lambda (x) (newline)))
+          ((eq? m 'withdraw) withdraw)
+          ((eq? m 'deposit) deposit)
+          (else (error "Uknown request -- MAKE-ACCOUNT" m))))
+  dispatch)
+
+;Tests
+(define acc (make-account 100 'test-pw))
+((acc 'test-pw 'withdraw) 50)
+((acc 'test-pw 'deposit) 20)
+((acc 'test-pw2 'withdraw) 50)
