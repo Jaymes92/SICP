@@ -1,0 +1,31 @@
+#lang sicp
+(define (random-in-range low high)
+  (let ((range (- high low)))
+    (+ low (random range))))
+
+(define (monte-carlo trials experiment)
+  (define (iter trials-remaining trials-passed)
+    (cond ((= trials-remaining 0)
+           (/ trials-passed trials 1.0))
+          ((experiment)
+           (iter (- trials-remaining 1) (+ trials-passed 1)))
+          (else
+           (iter (- trials-remaining 1) trials-passed))))
+  (iter trials 0))
+
+;Internally define the experiment procedure so it can access the bounds while still taking 0 inputs.
+(define (estimate-integral P x1 x2 y1 y2 trials)
+  (define (integral-test)
+    (let ((x (random-in-range x1 x2))
+          (y (random-in-range y1 y2)))
+      (P x y)))
+  ;Return monte-carlo * (Area or given rectangle)
+  (* (monte-carlo trials integral-test)
+     (- x2 x1)
+     (- y2 y1)))
+
+(define (test-predicate x y)
+  (<= (+ (expt (- x 5) 2) (expt (- y 7) 2)) 9))
+
+;Result independent of rectangle size and seems to give good result!
+(estimate-integral test-predicate 2.0 10.0 4.0 100.0 1e6)
