@@ -1,0 +1,27 @@
+#lang sicp
+;If you want to use the "let" assignment, you need to make rand a variable, not a procedure.
+;If it was a procedure, the "let" would get called every time. Just start x = 0 for simplicity.
+;I don't know how to make a reproducible random procedure, so my 'random' generator just increments by one for now for reproducibility. 
+(define rand
+  (let ((x 0))
+    (define (generate)
+      (set! x (inc x))
+      x)
+    (define (reset n)
+      (set! x n)
+      x)
+    (define (dispatch m)
+      (cond ((eq? m 'generate) (generate))
+            ((eq? m 'reset) reset)
+            (else (error "Command not recognized --- RAND " m))))
+  dispatch))
+
+(rand 'generate)
+(rand 'generate)
+(rand 'generate)
+(rand 'generate)
+(rand 'generate)
+(rand 'generate)
+((rand 'reset) 2)
+(rand 'generate)
+(rand 'generate)
