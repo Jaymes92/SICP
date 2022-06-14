@@ -1,28 +1,35 @@
 #lang sicp
-;Modify solution 3.03 to add a password checking procedure.
-;Add it to dispatch to allow it to be externally called.
+;3.03 - Didn't end up modifying and no incorrect guess counter included.
 (define (make-account balance password)
   (define (withdraw amount)
     (if (>= balance amount)
         (begin (set! balance (- balance amount))
                balance)
-        "Insufficient funds"))
+        (error "Insufficient funds")))
   (define (deposit amount)
     (set! balance (+ balance amount))
     balance)
-  (define (correct-password? pw)
-    (eq? pw password))
   (define (dispatch pw m)
-    (cond ((not (correct-password? pw))
-           (display "Incorrect password")
-           (lambda (x) (newline)))
-          ((eq? m 'correct-password?) correct-password?)
+    (cond ((not (eq? password pw))
+           (error "Incorrect password in origin account."))
           ((eq? m 'withdraw) withdraw)
           ((eq? m 'deposit) deposit)
           (else (error "Uknown request -- MAKE-ACCOUNT " m))))
   dispatch)
 
-(define (make-joint acc pw1 pw2)
-  (if ((acc 'correct-password?) pw1)
-      
-  
+;Store a set of the origin-acc/origin-pw in this environment. All you have to do
+;is check for correct joint password, then pass in the credentials stored in the environment. 
+(define (make-joint origin-acc origin-pw new-pw)
+  (define (dispatch pw m)
+    (if (not (eq? pw new-pw))
+        (error "Incorrect password in joint account.")
+        (origin-acc origin-pw m)))
+    dispatch)
+
+
+(define acc1 (make-account 100 'a))
+(define acc2 (make-joint acc1 'a 'b))
+((acc1 'a 'withdraw) 20)
+((acc2 'b 'withdraw) 20)
+((acc1 'a 'deposit) 50)
+((acc2 'b 'deposit) 70)
