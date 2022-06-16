@@ -1,0 +1,28 @@
+#lang sicp
+(define (count-pairs x)
+  (define unique-list '())
+  (define (not-unique? pair)
+    (display pair)
+    (display " looked for in ")
+    (display unique-list)
+    (newline)
+    (memq pair unique-list))  
+  (define (count-iter x)
+    (cond ((or (not (pair? x))
+               (not-unique? x))
+           0)
+          (else
+           (set! unique-list (cons x unique-list))
+           (+ (count-iter (car x))
+              (count-iter (cdr x))
+              1))))
+  (count-iter x))
+          
+
+(define test (list 'a 'b 'c 'd 'd))
+(count-pairs test)
+
+(define x (list 'a 'a))
+(count-pairs x)
+(define xx (cons x x))
+(count-pairs xx)

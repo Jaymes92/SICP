@@ -1,0 +1,44 @@
+#lang sicp
+;By always returning just the front pointer it prints the queue by default and I made no print function. 
+(define (make-queue)
+  (let ((front-ptr '())
+        (rear-ptr '()))
+
+    (define (set-front-ptr! item) (set! front-ptr item))
+
+    (define (set-rear-ptr! item) (set! rear-ptr item))
+    
+    (define (empty-queue?) (null? front-ptr))
+    
+    (define (insert item)
+      (let ((new-pair (cons item '())))
+        (cond ((empty-queue?)
+               (set-front-ptr! new-pair)
+               (set-rear-ptr! new-pair)
+               front-ptr)
+              (else
+               (set-cdr! rear-ptr new-pair)
+               (set-rear-ptr! new-pair)
+               front-ptr))))
+
+    (define (delete)
+      (cond ((empty-queue?)
+             (error "Delete called on empty queue"))
+            (else
+             (set-front-ptr! (cdr front-ptr))
+             front-ptr)))
+    
+    (define (dispatch m)
+      (cond ((eq? m 'front-ptr) front-ptr)
+            ((eq? m 'rear-ptr) rear-ptr)
+            ((eq? m 'insert) insert)
+            ((eq? m 'delete) delete)
+            (else
+             (error "Unkown command in MAKE-QUEUE"))))
+    dispatch))
+
+(define q1 (make-queue))
+((q1 'insert) 'a)
+((q1 'insert) 'b)
+((q1 'delete))
+((q1 'insert) 'c)
