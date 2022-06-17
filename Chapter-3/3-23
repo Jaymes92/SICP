@@ -1,0 +1,104 @@
+#lang sicp
+;Use a doubly linked list solution. Each node is a list with three entries (value, left-node, right-node).
+;Node constructor, selectors, and mutators. 
+(define (make-node val left right) (list val left right))
+
+(define (value node) (car node))
+
+(define (left-ptr node) (cadr node))
+
+(define (right-ptr node) (caddr node))
+
+(define (set-left-ptr! node new-node) (set-car! (cdr node) new-node))
+
+(define (set-right-ptr! node new-node) (set-car! (cddr node) new-node))
+
+;Deque will be a doubly linked list of nodes. One pair (front-node,rear-node) to keep track of start and end of list.
+;Deque constructor, selectors, and mutators.
+(define (make-deque) (cons '() '()))
+
+(define (front-deque deque) (car deque))
+
+(define (rear-deque deque) (cdr deque))
+
+(define (set-front-deque! deque node) (set-car! deque node))
+
+(define (set-rear-deque! deque node) (set-cdr! deque node))
+
+(define (empty-deque? deque)
+  (and (null? (front-deque deque)) (null? (rear-deque deque))))
+
+;Each entry case just needs to check if it is the first entry to set both front and back to the same.
+;Otherwise just update the links and the front/rear pointers.
+(define (front-insert-deque! deque item)
+  (cond ((empty-deque? deque)
+         (let ((new-node (make-node item '() '())))
+           (set-front-deque! deque new-node)
+           (set-rear-deque! deque new-node)
+           deque))
+        (else
+         (let ((new-node (make-node item '() (front-deque deque))))
+           (set-left-ptr! (front-deque deque) new-node)
+           (set-front-deque! deque new-node)))))
+
+(define (rear-insert-deque! deque item)
+  (cond ((empty-deque? deque)
+         (let ((new-node (make-node item '() '())))
+           (set-front-deque! deque new-node)
+           (set-rear-deque! deque new-node)
+           deque))
+        (else
+         (let ((new-node (make-node item (rear-deque deque) '())))
+           (set-right-ptr! (rear-deque deque) new-node)
+           (set-rear-deque! deque new-node)))))
+
+;Unlink from list and move pointers to delete.
+(define (front-delete-deque! deque)
+  (cond ((empty-deque? deque)
+         (error "front-delete called on empty queue"))
+        (else
+         (set-front-deque! deque (right-ptr (front-deque deque)))
+         (set-left-ptr! (front-deque deque) '()))))
+
+(define (rear-delete-deque! deque)
+  (cond ((empty-deque? deque)
+         (error "rear-delete called on empty queue"))
+        (else
+         (set-rear-deque! deque (left-ptr (rear-deque deque)))
+         (set-right-ptr! (rear-deque deque) '()))))
+
+;By looking at the output of a structure that loops back on itself causes #= and weird stuff so remove all returning of the queue
+;and loop through the list with a nicer print function to visualize for testing.
+(define (print-deque deque)
+  (let ((current (front-deque deque)))
+    (define (iter)
+      (if (not (null? (right-ptr current)))
+          (begin (display (car current))
+                 (set! current (right-ptr current))
+                 (display " ")
+                 (iter))
+          (begin (display (car current))
+                 (newline))))
+    (iter)))
+    
+(define d1 (make-deque))
+(front-insert-deque! d1 'b)
+(print-deque d1)
+(front-insert-deque! d1 'a)
+(print-deque d1)
+(front-insert-deque! d1 'c)
+(print-deque d1)
+(front-insert-deque! d1 'asdf)
+(print-deque d1)
+(rear-insert-deque! d1 'eh)
+(print-deque d1)
+(front-delete-deque! d1)
+(print-deque d1)
+(front-delete-deque! d1)
+(print-deque d1)
+(rear-insert-deque! d1 'eh)
+(print-deque d1)
+(rear-delete-deque! d1)
+(print-deque d1)
+(rear-delete-deque! d1)
+(print-deque d1)
