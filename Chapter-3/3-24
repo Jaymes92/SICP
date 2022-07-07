@@ -1,18 +1,19 @@
 #lang sicp
-(define (make-table)
+;Alter make-table to take arbitrary same-key? procedure, instead of checking with assoc.
+(define (make-table same-key?)
   (let ((local-table (list '*table*)))
     (define (lookup key-1 key-2)
-      (let ((subtable (assoc key-1 (cdr local-table))))
+      (let ((subtable (same-key? key-1 (cdr local-table))))
         (if subtable
-            (let ((record (assoc key-2 (cdr subtable))))
+            (let ((record (same-key? key-2 (cdr subtable))))
               (if record
                   (cdr record)
                   false))
             false)))
     (define (insert! key-1 key-2 value)
-      (let ((subtable (assoc key-1 (cdr local-table))))
+      (let ((subtable (same-key? key-1 (cdr local-table))))
         (if subtable
-            (let ((record (assoc key-2 (cdr subtable))))
+            (let ((record (same-key? key-2 (cdr subtable))))
               (if record
                   (set-cdr! record value)
                   (set-cdr! subtable
@@ -29,6 +30,15 @@
             (else (error "Unkown operation -- TABLE" m))))
     dispatch))
 
-(define t1 (make-table))
-((t1 'insert-proc!) 'subtable1 2.5 4)
-((t1 'lookup-proc) 'subtable1 2.5)
+;Replace assoc by comparing keys within a given tolerance value.
+(define (search-within-tolerance key table)
+  (define tolerance 1)
+  (cond ((null? table) false)
+        ((> tolerance (abs (- key (caar table)))) (car table))
+        (else (search-within-tolerance key (cdr table)))))
+
+;Testing.
+(define t1 (make-table search-within-tolerance))
+((t1 'insert-proc!) 1 3 'a)
+((t1 'insert-proc!) 1 5 'b)
+((t1 'lookup-proc) 1.5 4.1)
